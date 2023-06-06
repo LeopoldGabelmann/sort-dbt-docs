@@ -1,0 +1,57 @@
+default_language_version:
+    python: python3.10
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: check-added-large-files
+        args: [--maxkb=400]
+        exclude: ^()
+    -   id: check-ast # Simply check whether the files parse as valid python.
+    -   id: check-json # This hook checks json files for parseable syntax.
+    -   id: pretty-format-json # This hook sets a standard for formatting JSON files.
+        args: [--autofix, --no-sort-keys]
+    -   id: check-yaml # Check that yaml-files can be parsed.
+    -   id: check-merge-conflict # Check for files that contain merge conflict strings.
+    -   id: end-of-file-fixer # Ensures that a file is either empty, or ends with one newline.
+    -   id: trailing-whitespace # This hook trims trailing whitespace.
+
+-   repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.9.0
+    hooks:
+    -   id: pretty-format-toml
+        args: [--autofix]
+    -   id: pretty-format-yaml
+        args: [--autofix, --indent, '4']
+
+-   repo: https://github.com/asottile/reorder_python_imports # Autosort python imports.
+    rev: v3.9.0
+    hooks:
+    -   id: reorder-python-imports
+        exclude: __init__.py
+
+-   repo: https://github.com/psf/black # Black auto formatting.
+    rev: 23.3.0
+    hooks:
+    -   id: black
+        exclude: ^(notebooks/)
+
+-   repo: https://github.com/PyCQA/flake8 # Flake8 formatting.
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        args: [--max-line-length=100, '--ignore=E203,W503,F821,F811,F401']
+        exclude: ^(notebooks/|.*/__init__.py)
+
+-   repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+    -   id: pydocstyle # Test all docstrings for correct syntax.
+        exclude: tests/
+        args: ['--ignore=D107,D203,D212,D213,D104']
+
+-   repo: https://github.com/asottile/pyupgrade # update syntax for newer versions of python.
+    rev: v3.4.0
+    hooks:
+    -   id: pyupgrade
