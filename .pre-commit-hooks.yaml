@@ -1,0 +1,7 @@
+-   id: sort-dbt-docs
+    name: sort-dbt-docs
+    description: Sort the dbt docs blocks in dbt macros alphabetically within a dbt project
+    entry: sort-dbt-docs
+    language: python
+    require_serial: true
+    types: [markdown]
