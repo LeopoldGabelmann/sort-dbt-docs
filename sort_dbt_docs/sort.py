@@ -14,39 +14,60 @@ Description of column.
 {% enddocs %}
 
 """
-import os
+import argparse
+import logging
 import re
-import shutil
 
-# Get the list of markdown files in the folder
-folder_path = r"macros\docs"  # Set the folder path where the markdown files are located
-markdown_files = [
-    file
-    for file in os.listdir(folder_path)
-    if file.startswith("doc_") and file.endswith(".md")
-]
 
-# Sort and replace each markdown file
-for file_name in markdown_files:
-    file_path = os.path.join(folder_path, file_name)
+logger = logging.getLogger(__name__)
 
-    with open(file_path) as f:
-        markdown_text = f.read()
 
-    pattern = r"{% docs (.+?) %}\n(.*?)\n{% enddocs %}"
-    docs_blocks = re.findall(pattern, markdown_text, flags=re.DOTALL)
+def main():
+    """Sort the docs of a dbt yml file.
 
-    sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0].lower())
+    Read in the yml containing the dbt cml docs, sort the doc blocks alphabetically and overwrite
+    the original file with the new content.
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "filenames",
+        action="store",
+        type=str,
+        nargs=argparse.REMAINDER,
+        help="Filename in which the dbt doc blocks will be sorted alphabetically.",
+    )
+    args = parser.parse_args()
 
-    sorted_markdown = ""
-    for block in sorted_docs_blocks:
-        sorted_markdown += f"{{% docs {block[0]} %}}\n{block[1]}\n{{% enddocs %}}\n\n\n"
+    for filename in args.filenames:
+        logger.debug(f"Sorting docs within the file <{filename}>.")
 
-    # Create a temporary file path for the sorted markdown
-    temp_file_path = file_path + ".temp"
+        with open(filename) as f:
+            markdown_text = f.read()
 
-    with open(temp_file_path, "w") as f:
-        f.write(sorted_markdown)
+        pattern = r"{% docs (.+?) %}\n(.*?)\n{% enddocs %}"
+        docs_blocks = re.findall(pattern, markdown_text, flags=re.DOTALL)
+        sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0].lower())
 
-    # Replace the original file with the sorted file
-    shutil.move(temp_file_path, file_path)
+        # Add the sorted docs to a new string so that this can be written back to the file.
+        sorted_markdown = ""
+        for block in sorted_docs_blocks:
+            sorted_markdown += (
+                f"{{% docs {block[0]} %}}\n{block[1]}\n{{% enddocs %}}\n\n\n"
+            )
+
+        # Correct the last three empty lines to only one empty line.
+        sorted_markdown = sorted_markdown[:-2]
+        logger.debug(f"Deleted the last two line breaks of the file <{filename}>.")
+
+        # Control, whether the file has changed. If not, jump out of the function:
+        if markdown_text != sorted_markdown:
+            with open(filename, "w") as f:
+                f.write(sorted_markdown)
+                logger.debug(f"Wrote file <{filename}>.")
+
+            # Print to the console that there has been a resort in the files.
+            print(f"The docs within <{filename}> have been sorted.")
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
