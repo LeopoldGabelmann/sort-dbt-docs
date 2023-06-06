@@ -1,18 +1,23 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
 [tool.poetry]
-name = "sort-dbt-docs"
-version = "0.1.0"
-description = "Pre-commit hook that sorts dbt doc blocks in a macro alphabetically"
 authors = ["Elisabeth Kury <https://github.com/Elisabeth-Kury>, Leopold Gabelmann <https://github.com/LeopoldGabelmann>"]
+description = "Pre-commit hook that sorts dbt doc blocks in a macro alphabetically"
 license = "MIT"
-readme = "README.md"
+name = "sort-dbt-docs"
 packages = [{include = "sort_dbt_docs"}]
+readme = "README.md"
+repository = "https://github.com/LeopoldGabelmann/sort-dbt-docs.git"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.2"
+tomli = "^2.0.1"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.scripts]
+sort-dbt-docs = "sort_dbt_docs.sort:main"
