@@ -17,13 +17,19 @@ TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata"
 class TestParser:
     """All unit test for the parse_arguments() function."""
 
-    def test_parser():
-        # TODO fill test
-        pass
+    @mock.patch("sys.argv", ["script.py", "file1.md", "file2.md"])
+    def test_parser_nargs(self):
+        """Test that the parser reads in the remainders as filenames."""
+        args = parse_arguments()
 
-    def test_parser_nargs():
-        # TODO fill
-        pass
+        assert args.filenames == ["file1.md", "file2.md"]
+
+    @mock.patch("sys.argv", ["script.py"])
+    def test_parser_no_args(self):
+        """Test that the parser is empty if no remainders are given."""
+        args = parse_arguments()
+
+        assert args.filenames == []
 
 
 class TestMain:

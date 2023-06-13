@@ -69,7 +69,7 @@ def main(parser_args: argparse.Namespace) -> None:
     for filename in parser_args.filenames:
         logger.debug(f"Sorting docs within the file <{filename}>.")
 
-        with open(file=filename, encoding="utf-8") as f:
+        with open(file=filename, mode="r", encoding="utf-8") as f:
             markdown_text = f.read()
 
         sorted_markdown = _sort_markdown(filename, markdown_text)
