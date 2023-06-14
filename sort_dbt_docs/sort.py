@@ -22,7 +22,7 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def parse_arguments() -> argparse.Namespace:
+def _parse_arguments() -> argparse.Namespace:
     """Parse cmd arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -85,5 +85,5 @@ def main(parser_args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":  # pragma: no cover
-    args = parse_arguments()
+    args = _parse_arguments()
     raise SystemExit(main(args))

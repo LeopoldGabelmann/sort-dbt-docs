@@ -6,12 +6,78 @@ from unittest import mock
 
 import pytest
 
+from sort_dbt_docs.sort import _parse_arguments
+from sort_dbt_docs.sort import _sort_markdown
 from sort_dbt_docs.sort import main
-from sort_dbt_docs.sort import parse_arguments
 
 
 # Define constants.
 TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata"
+
+
+@pytest.fixture
+def set_argparse_namespace():
+    """Fixture that sets a argparse namespace with one file name as input."""
+    parser = argparse.Namespace(filenames=["file_one"])
+    return parser
+
+
+@pytest.fixture
+def get_input_docs():
+    """Fixture that returns a path to a test doc markdown file."""
+
+    def _method(scenario: str) -> str:
+        if scenario == "happy":
+            filename = "happy_docs.md"
+        elif scenario == "double":
+            filename = "double_docs.md"
+        elif scenario == "double_no_sort":
+            filename = "double_no_sort_docs.md"
+        elif scenario == "to_sort":
+            filename = "to_sort_docs.md"
+        elif scenario == "special_signs":
+            filename = "special_signs_docs.md"
+        elif scenario == "no_empty_lines":
+            filename = "no_empty_lines_docs.md"
+        elif scenario == "cap_low":
+            filename = "cap_low_docs.md"
+        else:
+            raise ValueError("Senario is not defined.")
+
+        file_path = TEST_DATA / filename
+        with open(file=file_path, encoding="utf-8") as f:
+            markdown_text = f.read()
+        return markdown_text
+
+    return _method
+
+
+@pytest.fixture
+def get_expected_docs():
+    """Fixture that outputs the expected format of the docs after the sorting."""
+
+    def _method(scenario: str) -> str:
+        if scenario == "double":
+            filename = "expected_double_docs.md"
+        elif scenario == "double_no_sort":
+            filename = "expected_double_no_sort_docs.md"
+        elif scenario == "to_sort":
+            filename = "happy_docs.md"
+        elif scenario == "special_signs":
+            filename = "expected_special_signs_docs.md"
+        elif scenario == "no_empty_lines":
+            filename = "expected_no_empty_lines_docs.md"
+        elif scenario == "cap_low":
+            filename = "expected_cap_low_docs.md"
+        else:
+            raise ValueError("Scenario is not defined.")
+
+        file_path = TEST_DATA / filename
+        with open(file=file_path, encoding="utf-8") as f:
+            markdown_text = f.read()
+        return markdown_text
+
+    return _method
 
 
 class TestParser:
@@ -20,71 +86,34 @@ class TestParser:
     @mock.patch("sys.argv", ["script.py", "file1.md", "file2.md"])
     def test_parser_nargs(self):
         """Test that the parser reads in the remainders as filenames."""
-        args = parse_arguments()
+        args = _parse_arguments()
 
         assert args.filenames == ["file1.md", "file2.md"]
 
     @mock.patch("sys.argv", ["script.py"])
     def test_parser_no_args(self):
         """Test that the parser is empty if no remainders are given."""
-        args = parse_arguments()
+        args = _parse_arguments()
 
         assert args.filenames == []
 
 
+class TestSortMarkdown:
+    """Unit tests for the function sort()."""
+
+    @pytest.mark.parametrize(
+        "scenario", ["to_sort", "double", "special_signs", "no_empty_lines", "cap_low"]
+    )
+    def test_sort_double_docs(self, scenario, get_input_docs, get_expected_docs):
+        """Test that the docs are sorted as expected."""
+        docs, expected = get_input_docs(scenario), get_expected_docs(scenario)
+
+        result = _sort_markdown(filename="_", markdown_text=docs)
+        assert result == expected
+
+
 class TestMain:
     """All unit test for the main() function."""
-
-    @staticmethod
-    @pytest.fixture
-    def set_argparse_namespace():
-        """Fixture that sets a argparse namespace with one file name as input."""
-        parser = argparse.Namespace(filenames=["file_one"])
-        return parser
-
-    @staticmethod
-    @pytest.fixture
-    def get_input_docs():
-        """Fixture that returns a path to a test doc markdown file."""
-
-        def _method(scenario: str) -> str:
-            if scenario == "happy":
-                file_path = TEST_DATA / "happy_docs.md"
-            elif scenario == "double":
-                file_path = TEST_DATA / "double_docs.md"
-            elif scenario == "double_no_sort":
-                file_path = TEST_DATA / "double_no_sort_docs.md"
-            elif scenario == "to_sort":
-                file_path = TEST_DATA / "to_sort_docs.md"
-            else:
-                raise ValueError("Senario is not defined.")
-
-            with open(file=file_path, encoding="utf-8") as f:
-                markdown_text = f.read()
-            return markdown_text
-
-        return _method
-
-    @staticmethod
-    @pytest.fixture
-    def get_expected_docs():
-        """Fixture that outputs the expected format of the docs after the sorting."""
-
-        def _method(scenario: str) -> str:
-            if scenario == "double":
-                file_path = TEST_DATA / "expected_double_docs.md"
-            elif scenario == "double_no_sort":
-                file_path = TEST_DATA / "expected_double_no_sort_docs.md"
-            elif scenario == "to_sort":
-                file_path = TEST_DATA / "happy_docs.md"
-            else:
-                raise ValueError("Scenario is not defined.")
-
-            with open(file=file_path, encoding="utf-8") as f:
-                markdown_text = f.read()
-            return markdown_text
-
-        return _method
 
     def test_main_no_write(self, get_input_docs, set_argparse_namespace):
         """Test that if the docs are not sorted, main() does not write anything."""
