@@ -10,7 +10,7 @@ name = "sort-dbt-docs"
 packages = [{include = "sort_dbt_docs"}]
 readme = "README.md"
 repository = "https://github.com/LeopoldGabelmann/sort-dbt-docs.git"
-version = "0.1.0"
+version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
