@@ -1,9 +1,9 @@
-{% docs bbb %}
-Documentation for bbb.
-{% enddocs %}
-
 {% docs xxx %}
 Documentation for xxx.
+{% enddocs %}
+
+{% docs bbb %}
+Documentation for bbb.
 {% enddocs %}
 
 {% docs aaa %}

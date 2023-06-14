@@ -69,6 +69,8 @@ def get_expected_docs():
             filename = "expected_no_empty_lines_docs.md"
         elif scenario == "cap_low":
             filename = "expected_cap_low_docs.md"
+        elif scenario == "happy":
+            filename = "happy_docs.md"
         else:
             raise ValueError("Scenario is not defined.")
 
@@ -102,13 +104,14 @@ class TestSortMarkdown:
     """Unit tests for the function sort()."""
 
     @pytest.mark.parametrize(
-        "scenario", ["to_sort", "double", "special_signs", "no_empty_lines", "cap_low"]
+        "scenario",
+        ["happy", "to_sort", "double", "special_signs", "no_empty_lines", "cap_low"],
     )
     def test_sort_double_docs(self, scenario, get_input_docs, get_expected_docs):
         """Test that the docs are sorted as expected."""
         docs, expected = get_input_docs(scenario), get_expected_docs(scenario)
 
-        result = _sort_markdown(filename="_", markdown_text=docs)
+        result = _sort_markdown(markdown_text=docs)
         assert result == expected
 
 

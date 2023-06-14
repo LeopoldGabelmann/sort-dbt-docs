@@ -36,7 +36,7 @@ def _parse_arguments() -> argparse.Namespace:
     return parser_args
 
 
-def _sort_markdown(filename: str, markdown_text: str) -> str:
+def _sort_markdown(markdown_text: str) -> str:
     """Sort dbt docs macro blocs alphabetically.
 
     :param filename: The path to the filename that is being sorted.
@@ -44,27 +44,27 @@ def _sort_markdown(filename: str, markdown_text: str) -> str:
         sorted.
     :return: Sorted markdown file with sorted dbt macro blocs.
     """
-    pattern = r"{% docs (.+?) %}\n(.*?)\n{% enddocs %}"
+    pattern = r"{% docs (.+?) %}(.*?){% enddocs %}"
     docs_blocks = re.findall(pattern, markdown_text, flags=re.DOTALL)
-    sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0].lower())
+    sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0])
 
     # Add the sorted docs to a new string so that this can be written back to the file.
     sorted_markdown = ""
     for block in sorted_docs_blocks:
-        sorted_markdown += f"{{% docs {block[0]} %}}\n{block[1]}\n{{% enddocs %}}\n\n\n"
+        sorted_markdown += (
+            f"{{% docs {block[0]} %}}\n{block[1].strip()}\n{{% enddocs %}}\n\n"
+        )
 
-    # Correct the last three empty lines to only one empty line.
-    sorted_markdown = sorted_markdown[:-2]
-    logger.debug(f"Deleted the last two line breaks of the file <{filename}>.")
-
+    # Correct the last double empty lines to only one empty line.
+    sorted_markdown = sorted_markdown[:-1]
     return sorted_markdown
 
 
 def main(parser_args: argparse.Namespace) -> None:
     """Sort the docs of a dbt yml file.
 
-    Read in the yml containing the dbt cml docs, sort the doc blocks alphabetically and overwrite
-    the original file with the new content.
+    Read in the md files containing the dbt cml docs, sort the doc blocks alphabetically and
+    overwrite the original file with the new content.
     """
     for filename in parser_args.filenames:
         logger.debug(f"Sorting docs within the file <{filename}>.")
@@ -72,7 +72,7 @@ def main(parser_args: argparse.Namespace) -> None:
         with open(file=filename, mode="r", encoding="utf-8") as f:
             markdown_text = f.read()
 
-        sorted_markdown = _sort_markdown(filename, markdown_text)
+        sorted_markdown = _sort_markdown(markdown_text)
 
         # Control, whether the file has changed. If not, jump out of the function:
         if markdown_text != sorted_markdown:

@@ -2,25 +2,24 @@
 
 Documentation for aaa one.
 
-{% enddocs %}
+{% enddocs %}{% docs bbb %}
+
+Documentation for bbb one.{% enddocs %}
 
 
-{% docs bbb %}
-
-Documentation for bbb one.
-
-{% enddocs %}
 
 
 {% docs aaa %}
 
+
+
+
+
 Documentation for aaa two.
-
 {% enddocs %}
 
 
-{% docs bbb %}
 
-Documentation for bbb two.
 
-{% enddocs %}
+
+{% docs bbb %}Documentation for bbb two.{% enddocs %}
