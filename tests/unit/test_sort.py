@@ -8,7 +8,7 @@ import pytest
 
 from sort_dbt_docs.sort import _parse_arguments
 from sort_dbt_docs.sort import _sort_markdown
-from sort_dbt_docs.sort import main
+from sort_dbt_docs.sort import sort
 
 
 # Define constants.
@@ -101,7 +101,7 @@ class TestParser:
 
 
 class TestSortMarkdown:
-    """Unit tests for the function sort()."""
+    """Unit tests for the function _sort_markdown()."""
 
     @pytest.mark.parametrize(
         "scenario",
@@ -115,15 +115,15 @@ class TestSortMarkdown:
         assert result == expected
 
 
-class TestMain:
-    """All unit test for the main() function."""
+class TestSort:
+    """All unit test for the sort() function."""
 
     def test_main_no_write(self, get_input_docs, set_argparse_namespace):
         """Test that if the docs are not sorted, main() does not write anything."""
         with mock.patch(
             "builtins.open", mock.mock_open(read_data=get_input_docs("happy"))
         ) as mock_open_file:
-            main(set_argparse_namespace)
+            sort(set_argparse_namespace)
 
         mock_open_file.assert_called_once_with(
             file="file_one", mode="r", encoding="utf-8"
@@ -140,7 +140,7 @@ class TestMain:
         with mock.patch(
             "builtins.open", mock.mock_open(read_data=get_input_docs(scenario))
         ) as mock_open_file:
-            main(set_argparse_namespace)
+            sort(set_argparse_namespace)
 
         mock_open_file.return_value.__enter__().write.assert_called_with(expected)
 
@@ -151,7 +151,7 @@ class TestMain:
         with mock.patch(
             "builtins.open", mock.mock_open(read_data=get_input_docs("to_sort"))
         ) as mock_open_file:
-            main(parser)
+            sort(parser)
 
         assert mock_open_file.call_count == 4
         assert mock_open_file.call_args_list[0].kwargs["file"] == "file_one"
@@ -189,7 +189,7 @@ class TestMain:
         with mock.patch(
             "builtins.open", mapped_mock_open(mapping_dict)
         ) as mock_open_file:
-            main(parser)
+            sort(parser)
 
         assert mock_open_file.call_count == 3
         assert mock_open_file.call_args_list[0].kwargs["mode"] == "r"

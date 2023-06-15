@@ -60,7 +60,7 @@ def _sort_markdown(markdown_text: str) -> str:
     return sorted_markdown
 
 
-def main(parser_args: argparse.Namespace) -> None:
+def sort(parser_args: argparse.Namespace) -> None:
     """Sort the docs of a dbt yml file.
 
     Read in the md files containing the dbt cml docs, sort the doc blocks alphabetically and
@@ -84,6 +84,12 @@ def main(parser_args: argparse.Namespace) -> None:
             print(f"The docs within <{filename}> have been sorted.")
 
 
+def main():
+    """Entry point for the executable."""
+    args = _parse_arguments()
+    raise SystemExit(sort(args))
+
+
 if __name__ == "__main__":  # pragma: no cover
     args = _parse_arguments()
-    raise SystemExit(main(args))
+    raise SystemExit(sort(args))
