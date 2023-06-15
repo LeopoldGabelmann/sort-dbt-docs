@@ -46,7 +46,7 @@ def _sort_markdown(markdown_text: str) -> str:
     """
     pattern = r"{% docs (.+?) %}(.*?){% enddocs %}"
     docs_blocks = re.findall(pattern, markdown_text, flags=re.DOTALL)
-    sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0])
+    sorted_docs_blocks = sorted(docs_blocks, key=lambda x: x[0].lower())
 
     # Add the sorted docs to a new string so that this can be written back to the file.
     sorted_markdown = ""
@@ -91,5 +91,4 @@ def main():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    args = _parse_arguments()
-    raise SystemExit(sort(args))
+    main()
