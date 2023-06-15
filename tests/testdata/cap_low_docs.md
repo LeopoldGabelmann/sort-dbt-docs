@@ -1,4 +1,4 @@
-{% docs A %}Documentation for A.
+{% docs X %}Documentation for X.
 {% enddocs %}
 {% docs a %}
 Documentation for a.
