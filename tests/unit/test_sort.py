@@ -107,7 +107,7 @@ class TestSortMarkdown:
         "scenario",
         ["happy", "to_sort", "double", "special_signs", "no_empty_lines", "cap_low"],
     )
-    def test_sort_double_docs(self, scenario, get_input_docs, get_expected_docs):
+    def test_sort_docs(self, scenario, get_input_docs, get_expected_docs):
         """Test that the docs are sorted as expected."""
         docs, expected = get_input_docs(scenario), get_expected_docs(scenario)
 
@@ -162,3 +162,36 @@ class TestMain:
         assert mock_open_file.call_args_list[2].kwargs["mode"] == "r"
         assert mock_open_file.call_args_list[3].kwargs["file"] == "file_two"
         assert mock_open_file.call_args_list[3].kwargs["mode"] == "w"
+
+    def test_two_calls_only_one_write(self, get_input_docs):
+        """
+        Test if only one file is written if the first call is for a file that is already sorted.
+        """
+
+        def mapped_mock_open(mapping_dict):
+            def _side_effect(file, *args, **kwargs):
+                return mock_files[file]
+
+            mock_files = {}
+            for key, value in mapping_dict.items():
+                mock_files[key] = mock.mock_open(read_data=value).return_value
+
+            mock_opener = mock.Mock()
+            mock_opener.side_effect = _side_effect
+            return mock_opener
+
+        parser = argparse.Namespace(filenames=["file_one", "file_two"])
+        mapping_dict = {
+            "file_one": get_input_docs("happy"),
+            "file_two": get_input_docs("to_sort"),
+        }
+
+        with mock.patch(
+            "builtins.open", mapped_mock_open(mapping_dict)
+        ) as mock_open_file:
+            main(parser)
+
+        assert mock_open_file.call_count == 3
+        assert mock_open_file.call_args_list[0].kwargs["mode"] == "r"
+        assert mock_open_file.call_args_list[1].kwargs["mode"] == "r"
+        assert mock_open_file.call_args_list[2].kwargs["mode"] == "w"
