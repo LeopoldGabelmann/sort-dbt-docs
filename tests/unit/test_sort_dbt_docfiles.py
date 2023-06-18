@@ -1,4 +1,4 @@
-"""Unit test the file sort_dbt_docs/sort.py,"""
+"""Unit test the file sort_dbt_docs/sort_dbt_docfiles.py."""
 import argparse
 import os
 from pathlib import Path
@@ -6,10 +6,7 @@ from unittest import mock
 
 import pytest
 
-from sort_dbt_docs.sort import _parse_arguments
-from sort_dbt_docs.sort import _sort_markdown
-from sort_dbt_docs.sort import sort
-
+from sort_dbt_docs.sort_dbt_docfiles import _sort_markdown, sort
 
 # Define constants.
 TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata"
@@ -80,24 +77,6 @@ def get_expected_docs():
         return markdown_text
 
     return _method
-
-
-class TestParser:
-    """All unit test for the parse_arguments() function."""
-
-    @mock.patch("sys.argv", ["script.py", "file1.md", "file2.md"])
-    def test_parser_nargs(self):
-        """Test that the parser reads in the remainders as filenames."""
-        args = _parse_arguments()
-
-        assert args.filenames == ["file1.md", "file2.md"]
-
-    @mock.patch("sys.argv", ["script.py"])
-    def test_parser_no_args(self):
-        """Test that the parser is empty if no remainders are given."""
-        args = _parse_arguments()
-
-        assert args.filenames == []
 
 
 class TestSortMarkdown:
