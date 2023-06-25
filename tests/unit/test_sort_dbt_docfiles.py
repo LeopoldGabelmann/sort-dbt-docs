@@ -6,7 +6,8 @@ from unittest import mock
 
 import pytest
 
-from sort_dbt_docs.sort_dbt_docfiles import _sort_markdown, sort
+from sort_dbt_docs.sort_dbt_docfiles import _sort_markdown
+from sort_dbt_docs.sort_dbt_docfiles import sort
 
 # Define constants.
 TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata"

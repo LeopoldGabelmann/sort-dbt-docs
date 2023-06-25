@@ -18,7 +18,8 @@ import argparse
 import logging
 import re
 
-from sort_dbt_docs.utils import _parse_arguments
+from sort_dbt_docs.utils import parse_arguments
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 def _sort_markdown(markdown_text: str) -> str:
     """Sort dbt docs macro blocs alphabetically.
 
-    :param filename: The path to the filename that is being sorted.
+    :param filename: The string containing the content of the markdown file to sort.
     :param markdown_text: The markdown text containing the dbt macro doc blocs that need to be
         sorted.
     :return: Sorted markdown file with sorted dbt macro blocs.
@@ -73,7 +74,7 @@ def sort(parser_args: argparse.Namespace) -> None:
 
 def main():
     """Entry point for the executable."""
-    args = _parse_arguments()
+    args = parse_arguments()
     raise SystemExit(sort(args))
 
 

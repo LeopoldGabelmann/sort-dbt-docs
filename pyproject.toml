@@ -14,6 +14,7 @@ version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
+tomli = {version = "^2.0.1", extras = ["dev"]}
 
 [tool.poetry.group.dev.dependencies]
 mock = "^5.0.2"
