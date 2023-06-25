@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def _parse_arguments() -> argparse.Namespace:
+def parse_arguments() -> argparse.Namespace:
     """Parse cmd arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
