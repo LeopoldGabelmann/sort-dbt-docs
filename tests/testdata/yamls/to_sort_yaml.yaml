@@ -1,0 +1,47 @@
+version: 2
+models:
+-   name: table_a
+    schema: schema_a
+    description: >
+        Description for table_a
+    columns:
+    -   name: column_b
+        description: Description for column_b
+        tests:
+        -   not_null
+    -   name: column_a
+        description: Primary key. {{ doc("column_a") }}
+        tests:
+        -   unique
+        -   not_null
+sources:
+-   name: database_a
+    schema: source_a
+    freshness:
+        error_after: {count: 1, period: day}
+    loaded_at_field: _snyc_me
+    database: source_a
+    tables:
+
+    -   name: table_b
+        columns:
+        -   name: column_b
+            description: >
+                {{ doc(column_b) }}
+        -   name: column_a
+            description: >
+                Description column a
+            tests:
+            -   unique
+            -   not_null
+
+    -   name: table_a
+        freshness:
+        columns:
+        -   name: column_a
+            description: >
+                Description column a
+            tests:
+            -   relationships:
+                    to: ref('table_b')
+                    field: column_a

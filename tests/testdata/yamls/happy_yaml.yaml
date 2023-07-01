@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+-   name: database_a
+    database: source_a
+    schema: source_a
+    freshness:
+        error_after: {count: 1, period: day}
+    loaded_at_field: _snyc_me
+
+    tables:
+    -   name: table_a
+        columns:
+        -   name: column_a
+            description: >
+                Description column a
+            tests:
+            -   relationships:
+                    to: ref('table_b')
+                    field: column_a
+        freshness:
+    -   name: table_b
+        columns:
+        -   name: column_a
+            description: >
+                Description column a
+            tests:
+            -   unique
+            -   not_null
+        -   name: column_b
+            description: >
+                {{ doc(column_b) }}
+        -   name: column_c
+            description: '{{ doc("column_c") }}'
+            tests:
+            -   dbt_utils.accepted_range:
+                    max_value: getdate()
+
+models:
+-   name: table_a
+    schema: schema_a
+    description: >
+        Description for table_a
+    columns:
+    -   name: column_a
+        description: Primary key. {{ doc("column_a") }}
+        tests:
+        -   unique
+        -   not_null
+    -   name: column_b
+        description: Description for column_b
+        tests:
+        -   not_null
+
+-   name: table_b
+    description: '{{ doc("table_b")}}'
+    columns:
+    -   name: column_a
+        description: Primary key.
+    -   name: column_b
+        description: '{{ doc("column_b") }}'
