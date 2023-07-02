@@ -43,6 +43,7 @@ def _sort_yaml(yaml_dict: dict) -> dict:
             source["tables"] = sorted_tables
             sorted_sources.append(source)
         sorted_dict["sources"] = sorted_sources
+
     if "models" in non_config_keys:
         sorted_models = sorted(yaml_dict["models"], key=itemgetter("name"))
         sorted_dict["models"] = sorted_models
@@ -64,7 +65,13 @@ def sort(parser_args: argparse.Namespace) -> None:
         # Control, whether the file has changed. If not, do nothing.
         if str(yml_text) != str(sorted_yml):
             with open(file=filename, mode="w", encoding="utf-8") as f:
-                yaml.dump(sorted_yml, f)
+                yaml.dump(
+                    data=sorted_yml,
+                    stream=f,
+                    indent=4,
+                    default_flow_style=False,
+                    sort_keys=False,
+                )
                 logger.debug(f"Dumped yaml file <{filename}>.")
 
             # Print to console that there have been adjustments within the yaml file.

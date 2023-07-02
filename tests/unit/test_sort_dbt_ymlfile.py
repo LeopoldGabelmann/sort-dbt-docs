@@ -28,8 +28,6 @@ def get_input_yaml():
     def _method(scenario: str) -> str:
         if scenario == "happy":
             filename = "happy_yaml.yaml"
-        elif scenario == "double":
-            filename = "double_yaml.yaml"
         elif scenario == "to_sort":
             filename = "to_sort_yaml.yaml"
         else:
@@ -48,8 +46,8 @@ def get_expected_yaml():
     """Fixture that outputs the expected format of the docs after the sorting."""
 
     def _method(scenario: str) -> str:
-        if scenario == "double":
-            filename = "expected_double_yaml.yaml"
+        if scenario == "happy":
+            filename = "happy_yaml.yaml"
         elif scenario == "to_sort":
             filename = "expected_to_sort_yaml.yaml"
         else:
@@ -61,6 +59,17 @@ def get_expected_yaml():
         return yaml_dict
 
     return _method
+
+
+class TestSortYaml:
+    """Class with all unit tests for the function _sort_yaml()."""
+
+    @pytest.mark.parametrize("scenario", ["happy", "to_sort"])
+    def test_sort_docs(self, scenario, get_input_yaml, get_expected_yaml):
+        original, expected = get_input_yaml(scenario), get_expected_yaml(scenario)
+
+        result = _sort_yaml(original)
+        assert result == str(expected)
 
 
 class TestSort:

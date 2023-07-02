@@ -2,11 +2,11 @@ version: 2
 
 sources:
 -   name: database_a
-    database: source_a
     schema: source_a
     freshness:
         error_after: {count: 1, period: day}
     loaded_at_field: _snyc_me
+    database: source_a
     tables:
     -   name: table_a
         freshness:
