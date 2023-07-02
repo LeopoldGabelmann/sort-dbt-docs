@@ -57,7 +57,7 @@ def sort(parser_args: argparse.Namespace) -> None:
     for filename in parser_args.filenames:
         logger.debug(f"Sorting docs within the file <{filename}>.")
 
-        with open(file=filename, mode="r", encoding="utf-8") as f:
+        with open(file=filename, encoding="utf-8") as f:
             markdown_text = f.read()
 
         sorted_markdown = _sort_markdown(markdown_text)
@@ -68,7 +68,7 @@ def sort(parser_args: argparse.Namespace) -> None:
                 f.write(sorted_markdown)
                 logger.debug(f"Wrote file <{filename}>.")
 
-            # Print to the console that there has been a resort in the files.
+            # Print to the console that there has been a re-sort in the files.
             print(f"The docs within <{filename}> have been sorted.")
 
 

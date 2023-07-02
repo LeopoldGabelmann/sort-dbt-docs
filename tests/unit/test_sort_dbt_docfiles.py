@@ -10,7 +10,7 @@ from sort_dbt_docs.sort_dbt_docfiles import _sort_markdown
 from sort_dbt_docs.sort_dbt_docfiles import sort
 
 # Define constants.
-TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata"
+TEST_DATA = Path(os.path.abspath(os.curdir)) / "tests/testdata" / "markdowns"
 
 
 @pytest.fixture
@@ -98,8 +98,8 @@ class TestSortMarkdown:
 class TestSort:
     """All unit test for the sort() function."""
 
-    def test_main_no_write(self, get_input_docs, set_argparse_namespace):
-        """Test that if the docs are not sorted, main() does not write anything."""
+    def test_sort_no_write(self, get_input_docs, set_argparse_namespace):
+        """Test that if the docs are not sorted, sort() does not write anything."""
         with mock.patch(
             "builtins.open", mock.mock_open(read_data=get_input_docs("happy"))
         ) as mock_open_file:
@@ -110,10 +110,10 @@ class TestSort:
         )
         mock_open_file.return_value.__enter__().write.assert_not_called()
 
-    def test_main_write(
+    def test_sort_write(
         self, get_input_docs, get_expected_docs, set_argparse_namespace
     ):
-        """Test that main() writes the expected sorted docs."""
+        """Test that sort() writes the expected sorted docs."""
         scenario = "double"
         expected = get_expected_docs(scenario)
 
@@ -124,8 +124,8 @@ class TestSort:
 
         mock_open_file.return_value.__enter__().write.assert_called_with(expected)
 
-    def test_main_multiple_calls(self, get_input_docs):
-        """Test that main() iterates over multiple files, if given multiple parser arguments."""
+    def test_sort_multiple_calls(self, get_input_docs):
+        """Test that sort() iterates over multiple files, if given multiple parser arguments."""
         parser = argparse.Namespace(filenames=["file_one", "file_two"])
 
         with mock.patch(
@@ -143,12 +143,12 @@ class TestSort:
         assert mock_open_file.call_args_list[3].kwargs["file"] == "file_two"
         assert mock_open_file.call_args_list[3].kwargs["mode"] == "w"
 
-    def test_two_calls_only_one_write(self, get_input_docs):
+    def test_sort_two_calls_only_one_write(self, get_input_docs):
         """
         Test if only one file is written if the first call is for a file that is already sorted.
         """
 
-        def mapped_mock_open(mapping_dict):
+        def mapped_mock_open(mapping_dict) -> mock.Mock:
             def _side_effect(file, *args, **kwargs):
                 return mock_files[file]
 
