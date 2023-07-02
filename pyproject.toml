@@ -14,11 +14,13 @@ version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
+pyyaml = "^6.0"
 tomli = {version = "^2.0.1", extras = ["dev"]}
 
 [tool.poetry.group.dev.dependencies]
 mock = "^5.0.2"
 pre-commit = "^3.3.2"
+pydocstyle = "^6.3.0"
 pytest = "^7.3.1"
 tomli = "^2.0.1"
 
