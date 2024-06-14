@@ -18,7 +18,7 @@ Documentation for bbb.
 Add this to your `.pre-commit-config.yaml`:
 ```yml
 -   repo: https://github.com/LeopoldGabelmann/sort-dbt-docs.git
-    rev: v0.2.0
+    rev: v0.4.0
     hooks:
     -   id: sort-dbt-docs
 ```
@@ -26,7 +26,7 @@ Add this to your `.pre-commit-config.yaml`:
 To limit it to your docs folder that most likely sits within your macro folder you can add:
 ```yml
 -   repo: https://github.com/LeopoldGabelmann/sort-dbt-docs.git
-    rev: v0.2.0
+    rev: v0.4.0
     hooks:
     -   id: sort-dbt-docs
         files: (^macros/docs/)
